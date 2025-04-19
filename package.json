@@ -1,0 +1,10 @@
+{
+  "devDependencies": {
+    "chrome-types": "^0.1.347",
+    "esbuild": "^0.25.2",
+    "typescript": "^5.8.3"
+  },
+  "scripts": {
+    "build": "node build.js"
+  }
+}
