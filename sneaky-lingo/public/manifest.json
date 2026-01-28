@@ -1,0 +1,11 @@
+{
+  "name": "React Sneaky Lingo",
+  "description": "Base Level Extension",
+  "version": "2.0",
+  "manifest_version": 3,
+  "action": {
+    "default_popup": "index.html",
+    "default_icon": "hi.png"
+  },
+  "permissions": ["storage"]
+}
