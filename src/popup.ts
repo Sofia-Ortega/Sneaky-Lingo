@@ -13,6 +13,7 @@ const rowsPlaceholderTop = document.getElementById(
 const rowsPlaceholderBottom = document.getElementById(
   "rows-placeholder-bottom",
 ) as HTMLTableRowElement;
+const disableButton = document.getElementById("disable-btn");
 
 addButton.addEventListener("click", () => {
   const originalWord: string = originalInput.value.trim();
@@ -25,6 +26,10 @@ addButton.addEventListener("click", () => {
 
   originalInput.value = "";
   replaceInput.value = "";
+});
+
+disableButton?.addEventListener("click", () => {
+  disableExtension();
 });
 
 document.addEventListener("click", (event: MouseEvent) => {
@@ -148,6 +153,19 @@ const loadLocalStorage = () => {
       .forEach(([originalWord, data]) => {
         addTableRow(originalWord, data.replace, data.disable, false);
       });
+  });
+};
+
+const disableExtension = () => {
+  chrome.storage.local.get(EXTENSION_DISABLED_KEY, function (result) {
+    let disabledHistory: boolean = false;
+    if (result && result[EXTENSION_DISABLED_KEY]) {
+      disabledHistory = result[EXTENSION_DISABLED_KEY];
+    }
+    chrome.storage.local.set(
+      { [EXTENSION_DISABLED_KEY]: !disabledHistory },
+      () => {},
+    );
   });
 };
 

@@ -7,6 +7,7 @@ const SKIP_TAGS = new Set([
 ]);
 
 const CONTENT_TRANSLATION_KEY = "translations";
+const CONTENT_EXTENSION_DISABLED_KEY = "extensionDisabled";
 
 interface ITranslationStorage {
   replace: string;
@@ -53,7 +54,7 @@ function walkAndReplace(
   }
 }
 
-const loadTranslationsLocalStorage = () => {
+const loadTranslationsAndRun = () => {
   chrome.storage.local.get(CONTENT_TRANSLATION_KEY, (result) => {
     const translations: Record<string, ITranslationStorage> =
       result[CONTENT_TRANSLATION_KEY] || {};
@@ -64,4 +65,11 @@ const loadTranslationsLocalStorage = () => {
   });
 };
 
-loadTranslationsLocalStorage();
+chrome.storage.local.get(CONTENT_EXTENSION_DISABLED_KEY, (result) => {
+  if (result[CONTENT_EXTENSION_DISABLED_KEY]) {
+    console.log("Extension is disabled — skipping");
+    return;
+  }
+
+  loadTranslationsAndRun();
+});
