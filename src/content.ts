@@ -38,7 +38,6 @@ function walkAndReplace(
           ? data.replace[0].toUpperCase() + data.replace.slice(1)
           : data.replace;
 
-        console.log(`Replacing "${match}" with "${replacement}"`);
         return replacement;
       });
     }
