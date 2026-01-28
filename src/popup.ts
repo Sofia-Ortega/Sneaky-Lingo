@@ -21,7 +21,7 @@ addButton.addEventListener("click", () => {
   if (!originalWord || !replaceWord) return;
 
   addToLocalStorage(originalWord, replaceWord);
-  addTableRow(originalWord, replaceWord, true);
+  addTableRow(originalWord, replaceWord, false, true);
 
   originalInput.value = "";
   replaceInput.value = "";
@@ -46,12 +46,16 @@ document.addEventListener("click", (event: MouseEvent) => {
 const addTableRow = (
   originalWord: string,
   replaceWord: string,
+  disabled: boolean,
   insertTop: boolean,
 ) => {
   const row = document.createElement("tr");
 
   const checkboxCell = document.createElement("td");
-  checkboxCell.innerHTML = `<input type="checkbox" />`;
+  const checkbox = document.createElement("input");
+  checkbox.type = "checkbox";
+  checkbox.checked = disabled;
+  checkboxCell.appendChild(checkbox);
 
   const originalCell = document.createElement("td");
   originalCell.textContent = originalWord;
@@ -80,26 +84,34 @@ const addTableRow = (
     }
   }
 
-  // const inputRow = table.querySelector("#input-row");
-
-  // if (inputRow && inputRow.nextElementSibling) {
-  //   table.insertBefore(row, inputRow.nextElementSibling);
-  // } else {
-  //   table.appendChild(row);
-  // }
+  checkbox.addEventListener("change", () => {
+    chrome.storage.local.get(TRANSLATION_KEY, (result) => {
+      const translations: Record<string, ITranslationStorage> =
+        result[TRANSLATION_KEY] || {};
+      if (translations[originalWord.toLowerCase()]) {
+        translations[originalWord.toLowerCase()].disable = checkbox.checked;
+        chrome.storage.local.set({ [TRANSLATION_KEY]: translations });
+      }
+    });
+  });
 };
 
+interface ITranslationStorage {
+  replace: string;
+  disable: boolean;
+}
+
 const addToLocalStorage = (original: string, replace: string) => {
-  chrome.storage.local.get(TRANSLATION_KEY, function (result) {
-    let translations = result[TRANSLATION_KEY] || {};
+  chrome.storage.local.get(TRANSLATION_KEY, (result) => {
+    let translations: Record<string, ITranslationStorage> =
+      result[TRANSLATION_KEY] || {};
 
-    translations[original] = replace;
+    translations[original.toLowerCase()] = {
+      replace,
+      disable: false, // default
+    };
 
-    // Save the updated array back to chrome storage
-    chrome.storage.local.set(
-      { [TRANSLATION_KEY]: translations },
-      function () {},
-    );
+    chrome.storage.local.set({ [TRANSLATION_KEY]: translations }, () => {});
   });
 };
 
@@ -115,14 +127,26 @@ const removeFromLocalStorage = (originalWord: string) => {
   });
 };
 
+const disableWordInLocalStorage = (originalWord: string, disabled: boolean) => {
+  chrome.storage.local.get(TRANSLATION_KEY, (result) => {
+    const translations: Record<string, ITranslationStorage> =
+      result[TRANSLATION_KEY] || {};
+    if (translations[originalWord.toLowerCase()]) {
+      translations[originalWord.toLowerCase()].disable = disabled;
+      chrome.storage.local.set({ [TRANSLATION_KEY]: translations });
+    }
+  });
+};
+
 const loadLocalStorage = () => {
   chrome.storage.local.get(TRANSLATION_KEY, function (result) {
-    let translations: Record<string, string> = result[TRANSLATION_KEY] || {};
+    let translations: Record<string, ITranslationStorage> =
+      result[TRANSLATION_KEY] || {};
 
     Object.entries(translations)
       .sort(([a], [b]) => a.localeCompare(b))
-      .forEach(([originalWord, replaceWord]) => {
-        addTableRow(originalWord, replaceWord, false);
+      .forEach(([originalWord, data]) => {
+        addTableRow(originalWord, data.replace, data.disable, false);
       });
   });
 };
