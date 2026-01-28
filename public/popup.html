@@ -1,24 +1,38 @@
 <html>
   <head>
     <title>Store Input</title>
-    <style>
-      #history {
-        margin-top: 20px;
-      }
-      .history-item {
-        margin-bottom: 10px;
-      }
-    </style>
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <input type="text" id="userInput" placeholder="Enter something..." />
-    <button id="saveButton">Save</button>
+    <div class="container">
+      <h1>Sneaky Lingo</h1>
 
-    <div id="history">
-      <h1>Yo :D</h1>
-      <h3>History:</h3>
-      <!-- History list will populate here -->
+      <div id="disable-container">
+        <div>Disable</div>
+        <button>t</button>
+      </div>
+
+      <table id="words-table">
+        <tr>
+          <th>Disable</th>
+          <th>Original Word</th>
+          <th>Replace</th>
+          <th></th>
+        </tr>
+        <tr id="input-row">
+          <td></td>
+          <td>
+            <input type="text" id="original-word" />
+          </td>
+          <td>
+            <input type="text" id="replace-word" />
+          </td>
+          <td><button id="add-word-btn">+</button></td>
+        </tr>
+      </table>
+      <button>Import</button>
     </div>
+
     <script src="../dist/popup.js"></script>
   </body>
 </html>
