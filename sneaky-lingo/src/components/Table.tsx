@@ -13,6 +13,7 @@ export default function Table() {
   ]);
   const [originalWord, setOriginalWord] = useState("");
   const [replaceWord, setReplaceWord] = useState("");
+  const [disabled, setDisabled] = useState(false);
 
   const handleAddWord = () => {
     if (!originalWord || !replaceWord) return;
@@ -42,6 +43,19 @@ export default function Table() {
       ),
     );
   };
+
+  const toggleDisableAll = () => {
+    const newDisabledState = !disabled;
+
+    setDisabled(newDisabledState);
+
+    setWords((prev) =>
+      prev.map((w) => ({
+        ...w,
+        disabled: newDisabledState,
+      })),
+    );
+  };
   return (
     <table id="words-table" className="my-8 border-separate border-spacing-x-4">
       <thead>
@@ -54,7 +68,15 @@ export default function Table() {
       </thead>
       <tbody>
         <tr>
-          <td></td>
+          <td>
+            <input
+              className="cursor-pointer"
+              type="checkbox"
+              checked={!disabled}
+              onClick={() => toggleDisableAll()}
+              readOnly
+            />
+          </td>
           <td>
             <input
               type="text"
@@ -88,6 +110,7 @@ export default function Table() {
             key={w.id}
             disableRow={disableRow}
             deleteRow={deleteRow}
+            disabled={disabled}
           />
         ))}
       </tbody>

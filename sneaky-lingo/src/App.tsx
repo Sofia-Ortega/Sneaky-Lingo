@@ -1,6 +1,5 @@
 import "./App.css";
 import Table from "./components/Table";
-import ToggleButton from "./components/ToggleButton";
 
 function App() {
   return (
@@ -10,9 +9,14 @@ function App() {
         <div className="text-sand mt-1">by: Alchemistix</div>
       </div>
 
+      <div className="text-sand mt-1 w-100 text-center">
+        Add words to replace your chrome browser history to help learn your
+        vocab!
+      </div>
+
       <Table />
 
-      <div className="flex  gap-3">
+      <div className="flex flex-col gap-3">
         <div className="border-3 border-b-sand px-10 py-2 rounded-sm">
           <button className="cursor-pointer text-sand font-bold">IMPORT</button>
         </div>
@@ -21,11 +25,6 @@ function App() {
             SUPPORT
           </button>
         </div>
-      </div>
-
-      <div className="flex">
-        <div>disable:</div>
-        <ToggleButton />
       </div>
     </div>
   );

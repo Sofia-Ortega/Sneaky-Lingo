@@ -5,9 +5,15 @@ interface Props {
   word: IWord;
   deleteRow: (id: string) => void;
   disableRow: (id: string) => void;
+  disabled: boolean;
 }
 
-export default function TableRow({ word, deleteRow, disableRow }: Props) {
+export default function TableRow({
+  word,
+  deleteRow,
+  disableRow,
+  disabled,
+}: Props) {
   return (
     <tr>
       <td>
@@ -16,6 +22,7 @@ export default function TableRow({ word, deleteRow, disableRow }: Props) {
           type="checkbox"
           checked={!word.disabled}
           onClick={() => disableRow(word.id)}
+          readOnly
         />
       </td>
       <td className={word.disabled ? "line-through text-gray-400" : ""}>
