@@ -1,0 +1,6 @@
+#separator:tab
+#html:true
+#tags column:3
+cat	gato	
+hello	hola	
+green	verde	

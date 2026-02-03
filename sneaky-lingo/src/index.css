@@ -4,6 +4,7 @@
   --color-desertnight: #2d2d2d;
   --color-purplepink: #ddb5f4;
   --color-sand: #ffefcc;
+  --color-mutedsand: #b9ac90;
 }
 
 :root {
@@ -15,4 +16,11 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+@font-face {
+  font-family: "KirangHaerang";
+  src: url("/fonts/KirangHaerang-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
 }
