@@ -110,7 +110,6 @@ export default function Table() {
             key={w.id}
             disableRow={disableRow}
             deleteRow={deleteRow}
-            disabled={disabled}
           />
         ))}
       </tbody>

@@ -1,19 +1,13 @@
-import type { IWord, IWordData } from "../types";
+import type { IWord } from "../types";
 import deleteIcon from "../assets/deleteIcon.png";
 
 interface Props {
   word: IWord;
   deleteRow: (id: string) => void;
   disableRow: (id: string) => void;
-  disabled: boolean;
 }
 
-export default function TableRow({
-  word,
-  deleteRow,
-  disableRow,
-  disabled,
-}: Props) {
+export default function TableRow({ word, deleteRow, disableRow }: Props) {
   return (
     <tr>
       <td>
