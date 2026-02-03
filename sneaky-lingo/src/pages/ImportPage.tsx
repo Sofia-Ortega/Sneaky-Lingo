@@ -1,7 +1,11 @@
 import { useRef, useState } from "react";
 import Header from "../components/shared/Header";
 
-export default function ImportPage() {
+interface Props {
+  setPage: React.Dispatch<React.SetStateAction<number>>;
+}
+
+export default function ImportPage({ setPage }: Props) {
   const [open, setOpen] = useState(false);
   const [mode, setMode] = useState(0);
 
@@ -41,7 +45,7 @@ export default function ImportPage() {
 
   return (
     <div className="flex flex-col h-100 justify-between items-center">
-      <Header>{textContent.header[mode]}</Header>
+      <Header setPage={setPage}>{textContent.header[mode]}</Header>
       <div className="text-sand">
         <div className="text-center">{textContent.body[mode]}</div>
         <div

@@ -5,7 +5,7 @@
   "manifest_version": 3,
   "action": {
     "default_popup": "index.html",
-    "default_icon": "hi.png"
+    "default_icon": "ninja_icon.png"
   },
   "permissions": ["storage"]
 }

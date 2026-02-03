@@ -1,7 +1,11 @@
 import Header from "../components/shared/Header";
 import Table from "../components/Table";
 
-export default function HomePage() {
+interface Props {
+  setPage: React.Dispatch<React.SetStateAction<number>>;
+}
+
+export default function HomePage({ setPage }: Props) {
   return (
     <div className="flex flex-col gap-2 justify-center items-center">
       <Header>Sneaky Lingo</Header>
@@ -13,9 +17,12 @@ export default function HomePage() {
       <Table />
 
       <div className="flex flex-col gap-3">
-        <div className="border-3 border-b-sand px-10 py-2 rounded-sm">
-          <button className="cursor-pointer text-sand font-bold">IMPORT</button>
-        </div>
+        <button
+          className="cursor-pointer text-sand font-bold border-3 border-b-sand px-10 py-2 rounded-sm"
+          onClick={() => setPage(1)}
+        >
+          IMPORT
+        </button>
         <a
           href="https://buymeacoffee.com/alchemistix"
           target="_blank"
