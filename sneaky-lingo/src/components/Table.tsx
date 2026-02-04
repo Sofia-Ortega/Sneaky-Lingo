@@ -1,6 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TableRow from "./TableRow";
 import type { IWord } from "../functions/types";
+import {
+  addToLocalStorage,
+  disableExtension,
+  disableWordInLocalStorage,
+  loadLocalStorage,
+  removeFromLocalStorage,
+} from "../functions/localStorage";
 
 export default function Table() {
   const [words, setWords] = useState<IWord[]>([
@@ -13,20 +20,28 @@ export default function Table() {
   ]);
   const [originalWord, setOriginalWord] = useState("");
   const [replaceWord, setReplaceWord] = useState("");
-  const [disabled, setDisabled] = useState(false);
+  const [extensionDisabled, setExtensionDisabled] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const wordsFromLocalStorage = await loadLocalStorage();
+      setWords(wordsFromLocalStorage);
+    })();
+  });
 
   const handleAddWord = () => {
     if (!originalWord || !replaceWord) return;
+    const id = crypto.randomUUID();
+    const newWord: IWord = {
+      id,
+      originalWord,
+      replaceWord,
+      disabled: false,
+    };
 
-    setWords((prev) => [
-      {
-        id: `${Date.now()}-${Math.random()}`,
-        originalWord,
-        replaceWord,
-        disabled: false,
-      },
-      ...prev,
-    ]);
+    setWords((prev) => [newWord, ...prev]);
+
+    addToLocalStorage(newWord);
 
     setOriginalWord("");
     setReplaceWord("");
@@ -34,28 +49,25 @@ export default function Table() {
 
   const deleteRow = (id: string) => {
     setWords((prev) => prev.filter((word) => word.id !== id));
+    removeFromLocalStorage(id);
   };
 
-  const disableRow = (id: string) => {
+  const disableRow = (id: string, disabled: boolean) => {
     setWords((prev) =>
       prev.map((word) =>
-        word.id === id ? { ...word, disabled: !word.disabled } : word,
+        word.id === id ? { ...word, disabled: disabled } : word,
       ),
     );
+
+    disableWordInLocalStorage(id, disabled);
   };
 
   const toggleDisableAll = () => {
-    const newDisabledState = !disabled;
-
-    setDisabled(newDisabledState);
-
-    setWords((prev) =>
-      prev.map((w) => ({
-        ...w,
-        disabled: newDisabledState,
-      })),
-    );
+    const newDisabledState = !extensionDisabled;
+    setExtensionDisabled(newDisabledState);
+    disableExtension();
   };
+
   return (
     <table id="words-table" className="my-8 border-separate border-spacing-x-4">
       <thead>
@@ -72,7 +84,7 @@ export default function Table() {
             <input
               className="cursor-pointer"
               type="checkbox"
-              checked={!disabled}
+              checked={!extensionDisabled}
               onClick={() => toggleDisableAll()}
               readOnly
             />
@@ -108,6 +120,7 @@ export default function Table() {
           <TableRow
             word={w}
             key={w.id}
+            extensionDisabled={extensionDisabled}
             disableRow={disableRow}
             deleteRow={deleteRow}
           />

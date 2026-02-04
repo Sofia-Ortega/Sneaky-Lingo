@@ -3,26 +3,45 @@ import deleteIcon from "../assets/deleteIcon.png";
 
 interface Props {
   word: IWord;
+  extensionDisabled: boolean;
   deleteRow: (id: string) => void;
-  disableRow: (id: string) => void;
+  disableRow: (id: string, disabled: boolean) => void;
 }
 
-export default function TableRow({ word, deleteRow, disableRow }: Props) {
+export default function TableRow({
+  word,
+  extensionDisabled,
+  deleteRow,
+  disableRow,
+}: Props) {
+  const handleCheckboxClick = () => {
+    disableRow(word.id, !word.disabled);
+  };
+
   return (
     <tr>
       <td>
         <input
-          className="cursor-pointer"
+          className={extensionDisabled ? "" : "cursor-pointer"}
           type="checkbox"
+          disabled={extensionDisabled}
           checked={!word.disabled}
-          onClick={() => disableRow(word.id)}
+          onClick={handleCheckboxClick}
           readOnly
         />
       </td>
-      <td className={word.disabled ? "line-through text-gray-400" : ""}>
+      <td
+        className={
+          word.disabled || extensionDisabled ? "line-through text-gray-400" : ""
+        }
+      >
         {word.originalWord}
       </td>
-      <td className={word.disabled ? "line-through text-gray-400" : ""}>
+      <td
+        className={
+          word.disabled || extensionDisabled ? "line-through text-gray-400" : ""
+        }
+      >
         {word.replaceWord}
       </td>
       <td className="flex justify-center items-center">

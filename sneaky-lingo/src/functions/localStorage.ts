@@ -5,9 +5,23 @@ const EXTENSION_DISABLED_KEY = "extensionDisabled";
 
 const ENABLE_EXTENTION_FUNCTIONALITY = true;
 
-const addToLocalStorage = async (word: IWord) => {
-  // const id = crypto.randomUUID();
+export const loadLocalStorage = async (): Promise<IWord[]> => {
+  if (!ENABLE_EXTENTION_FUNCTIONALITY) {
+    console.log("Chrome Extension functionality disabled globally");
+    return [];
+  }
 
+  return new Promise((resolve) => {
+    chrome.storage.local.get(TRANSLATION_KEY, (result) => {
+      const translations =
+        (result[TRANSLATION_KEY] as ITranslationStorage) ?? {};
+
+      resolve(Object.values(translations));
+    });
+  });
+};
+
+export const addToLocalStorage = async (word: IWord) => {
   return new Promise<void>((resolve) => {
     chrome.storage.local.get(TRANSLATION_KEY, (result) => {
       const translations =
@@ -20,7 +34,7 @@ const addToLocalStorage = async (word: IWord) => {
   });
 };
 
-const removeFromLocalStorage = async (id: string) => {
+export const removeFromLocalStorage = async (id: string) => {
   return new Promise<void>((resolve) => {
     chrome.storage.local.get(TRANSLATION_KEY, (result) => {
       const translations =
@@ -33,7 +47,7 @@ const removeFromLocalStorage = async (id: string) => {
   });
 };
 
-const disableWordInLocalStorage = (id: string, disabled: boolean) => {
+export const disableWordInLocalStorage = (id: string, disabled: boolean) => {
   if (!ENABLE_EXTENTION_FUNCTIONALITY) {
     console.log("Chrome Extension functionality disabled globally");
     return;
@@ -54,23 +68,7 @@ const disableWordInLocalStorage = (id: string, disabled: boolean) => {
   });
 };
 
-const loadLocalStorage = async (): Promise<IWord[]> => {
-  if (!ENABLE_EXTENTION_FUNCTIONALITY) {
-    console.log("Chrome Extension functionality disabled globally");
-    return [];
-  }
-
-  return new Promise((resolve) => {
-    chrome.storage.local.get(TRANSLATION_KEY, (result) => {
-      const translations =
-        (result[TRANSLATION_KEY] as ITranslationStorage) ?? {};
-
-      resolve(Object.values(translations));
-    });
-  });
-};
-
-const disableExtension = () => {
+export const disableExtension = () => {
   if (!ENABLE_EXTENTION_FUNCTIONALITY) {
     console.log("Chrome Extension functionality disabled globally");
     return;
