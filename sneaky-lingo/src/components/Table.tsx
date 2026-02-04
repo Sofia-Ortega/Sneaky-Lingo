@@ -10,14 +10,8 @@ import {
 } from "../functions/localStorage";
 
 export default function Table() {
-  const [words, setWords] = useState<IWord[]>([
-    {
-      id: "1",
-      originalWord: "orange",
-      replaceWord: "pumpkin",
-      disabled: false,
-    },
-  ]);
+  const [words, setWords] = useState<IWord[]>([]);
+
   const [originalWord, setOriginalWord] = useState("");
   const [replaceWord, setReplaceWord] = useState("");
   const [extensionDisabled, setExtensionDisabled] = useState(false);
