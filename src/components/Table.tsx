@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import TableRow from "./TableRow";
 import type { IWord } from "../functions/types";
 import {
@@ -15,6 +15,8 @@ export default function Table() {
   const [originalWord, setOriginalWord] = useState("");
   const [replaceWord, setReplaceWord] = useState("");
   const [extensionDisabled, setExtensionDisabled] = useState(false);
+
+  const originalInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     (async () => {
@@ -62,6 +64,19 @@ export default function Table() {
     disableExtension();
   };
 
+  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+
+      if (originalWord && replaceWord) {
+        handleAddWord();
+        requestAnimationFrame(() => {
+          originalInputRef.current?.focus();
+        });
+      }
+    }
+  };
+
   return (
     <table id="words-table" className="my-8 border-separate border-spacing-x-4">
       <thead>
@@ -79,26 +94,32 @@ export default function Table() {
               className="cursor-pointer"
               type="checkbox"
               checked={!extensionDisabled}
-              onClick={() => toggleDisableAll()}
+              onClick={toggleDisableAll}
               readOnly
             />
           </td>
+
           <td>
             <input
+              ref={originalInputRef}
               type="text"
               value={originalWord}
               onChange={(e) => setOriginalWord(e.target.value)}
-              className="border rounded-sm"
+              className="border rounded-sm focus:outline-none focus:ring-1 "
+              onKeyDown={onKeyDown}
             />
           </td>
+
           <td>
             <input
               type="text"
               value={replaceWord}
               onChange={(e) => setReplaceWord(e.target.value)}
-              className="border rounded-sm"
+              className="border rounded-sm focus:outline-none focus:ring-1 "
+              onKeyDown={onKeyDown}
             />
           </td>
+
           <td>
             <button
               onClick={handleAddWord}
