@@ -1,6 +1,6 @@
 import { useState } from "react";
 import TableRow from "./TableRow";
-import type { IWord } from "../types";
+import type { IWord } from "../functions/types";
 
 export default function Table() {
   const [words, setWords] = useState<IWord[]>([

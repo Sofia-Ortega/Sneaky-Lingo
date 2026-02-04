@@ -1,4 +1,4 @@
-import type { IWord } from "../types";
+import type { IWord } from "../functions/types";
 import deleteIcon from "../assets/deleteIcon.png";
 
 interface Props {

@@ -9,3 +9,5 @@ export interface IWord {
   replaceWord: string;
   disabled: boolean;
 }
+
+export type ITranslationStorage = Record<string, IWord>;
