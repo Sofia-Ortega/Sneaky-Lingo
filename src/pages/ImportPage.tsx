@@ -49,7 +49,8 @@ export default function ImportPage({ setPage }: Props) {
       let results = await parseTxt(file);
       console.log(results);
     } else if (ext == "csv") {
-      parseCsv();
+      let results = await parseCsv(file);
+      console.log(results);
     } else {
       console.log("invalid extension");
     }
@@ -77,7 +78,25 @@ export default function ImportPage({ setPage }: Props) {
       .filter((word) => word.originalWord && word.replaceWord);
   };
 
-  const parseCsv = () => {};
+  const parseCsv = async (file: File): Promise<IWord[]> => {
+    const text = await file.text();
+
+    return text
+      .split("\n")
+      .map((line) => line.trim())
+      .filter((line) => line.length > 0 && !line.startsWith("#")) // ignore empty or metadata lines
+      .map((line) => {
+        const [originalWord, replaceWord] = line.split(","); // CSV separator
+
+        return {
+          id: crypto.randomUUID(),
+          originalWord: originalWord?.trim() ?? "",
+          replaceWord: replaceWord?.trim() ?? "",
+          disabled: false,
+        };
+      })
+      .filter((word) => word.originalWord && word.replaceWord); // skip incomplete rows
+  };
 
   return (
     <div className="flex flex-col h-100 justify-between items-center">
