@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import Header from "../components/shared/Header";
+import type { IWord } from "../functions/types";
 
 interface Props {
   setPage: React.Dispatch<React.SetStateAction<number>>;
@@ -29,11 +30,11 @@ export default function ImportPage({ setPage }: Props) {
   };
 
   const importFile = () => {
-    console.log("Import");
     fileInputRef.current?.click(); // open file explorer
   };
 
-  const onFileSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onFileSelected = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("yo");
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -41,7 +42,42 @@ export default function ImportPage({ setPage }: Props) {
     console.log("Type:", file.type);
 
     // TODO: parse file here
+    const ext = file.name.split(".").pop();
+    console.log("about to parse:", ext);
+
+    if (ext == "txt") {
+      let results = await parseTxt(file);
+      console.log(results);
+    } else if (ext == "csv") {
+      parseCsv();
+    } else {
+      console.log("invalid extension");
+    }
   };
+
+  const parseTxt = async (file: File): Promise<IWord[]> => {
+    const text = await file.text();
+
+    const separator = text.includes("#separator:tab") ? "\t" : ",";
+
+    return text
+      .split("\n")
+      .map((line) => line.trim())
+      .filter((line) => line.length > 0 && !line.startsWith("#"))
+      .map((line) => {
+        const [originalWord, replaceWord] = line.split(separator);
+
+        return {
+          id: crypto.randomUUID(),
+          originalWord: originalWord?.trim() ?? "",
+          replaceWord: replaceWord?.trim() ?? "",
+          disabled: false,
+        };
+      })
+      .filter((word) => word.originalWord && word.replaceWord);
+  };
+
+  const parseCsv = () => {};
 
   return (
     <div className="flex flex-col h-100 justify-between items-center">
