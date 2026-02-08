@@ -4,8 +4,8 @@ import deleteIcon from "../assets/deleteIcon.png";
 interface Props {
   word: IWord;
   extensionDisabled: boolean;
-  deleteRow: (id: string) => void;
-  disableRow: (id: string, disabled: boolean) => void;
+  deleteRow: (originalWord: string) => void;
+  disableRow: (originalWord: string, disabled: boolean) => void;
 }
 
 export default function TableRow({
@@ -15,7 +15,7 @@ export default function TableRow({
   disableRow,
 }: Props) {
   const handleCheckboxClick = () => {
-    disableRow(word.id, !word.disabled);
+    disableRow(word.originalWord, !word.disabled);
   };
 
   return (
@@ -45,7 +45,10 @@ export default function TableRow({
         {word.replaceWord}
       </td>
       <td className="flex justify-center items-center">
-        <button onClick={() => deleteRow(word.id)} className="cursor-pointer">
+        <button
+          onClick={() => deleteRow(word.originalWord)}
+          className="cursor-pointer"
+        >
           <img src={deleteIcon} alt="Delete" className="w-4 h-4" />
         </button>
       </td>

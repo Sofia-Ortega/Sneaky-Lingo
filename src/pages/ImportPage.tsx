@@ -154,7 +154,6 @@ export default function ImportPage({ setPage }: Props) {
             <div className="absolute right-0 top-full mt-1 w-full bg-gray-800 shadow-lg z-10 border-0">
               <button
                 onClick={() => {
-                  setErrorMsg("yohoooo");
                   setMode((mode + 1) % 2);
                   setOpen(false);
                 }}
