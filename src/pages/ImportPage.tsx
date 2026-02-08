@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import Header from "../components/shared/Header";
 import type { IWord } from "../functions/types";
+import ErrorSnackbar from "../components/shared/ErrorSnackbar";
 
 interface Props {
   setPage: React.Dispatch<React.SetStateAction<number>>;
@@ -9,6 +10,7 @@ interface Props {
 export default function ImportPage({ setPage }: Props) {
   const [open, setOpen] = useState(false);
   const [mode, setMode] = useState(0);
+  const [errorMsg, setErrorMsg] = useState("");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -30,6 +32,7 @@ export default function ImportPage({ setPage }: Props) {
   };
 
   const importFile = () => {
+    setErrorMsg("");
     fileInputRef.current?.click(); // open file explorer
   };
 
@@ -41,18 +44,25 @@ export default function ImportPage({ setPage }: Props) {
     console.log("Selected file:", file.name);
     console.log("Type:", file.type);
 
-    // TODO: parse file here
-    const ext = file.name.split(".").pop();
-    console.log("about to parse:", ext);
+    try {
+      const ext = file.name.split(".").pop();
+      let results: IWord[] | null = null;
 
-    if (ext == "txt") {
-      let results = await parseTxt(file);
-      console.log(results);
-    } else if (ext == "csv") {
-      let results = await parseCsv(file);
-      console.log(results);
-    } else {
-      console.log("invalid extension");
+      if (ext == "txt") {
+        results = await parseTxt(file);
+      } else if (ext == "csv") {
+        results = await parseCsv(file);
+      } else {
+        console.log("invalid extension");
+        throw new Error("Invalid Extension");
+      }
+    } catch (e) {
+      if (e instanceof Error) {
+        setErrorMsg(e.message);
+      } else {
+        setErrorMsg("An unknown error occurred");
+        console.error("An unknown error occured", e);
+      }
     }
   };
 
@@ -115,41 +125,46 @@ export default function ImportPage({ setPage }: Props) {
           example{textContent.extension[mode]}
         </div>
       </div>
-      <div className="relative inline-flex">
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept=".txt,.csv"
-          onChange={onFileSelected}
-          className="hidden"
-        />
-        <button
-          onClick={importFile}
-          className="cursor-pointer bg-sky-300 hover:bg-sky-400 px-6 py-2 rounded-l-sm text-desertnight font-bold"
-        >
-          IMPORT
-        </button>
+      <div className="flex flex-col items-center gap-2">
+        {errorMsg && <ErrorSnackbar errorMsg={errorMsg} />}
 
-        <button
-          onClick={() => setOpen((v) => !v)}
-          className="cursor-pointer bg-sky-300 hover:bg-sky-400 px-3 py-2 border-l border-sky-400 rounded-r-sm text-desertnight font-bold"
-        >
-          {textContent.extension[mode]} ▾
-        </button>
+        <div className="relative inline-flex">
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".txt,.csv"
+            onChange={onFileSelected}
+            className="hidden"
+          />
+          <button
+            onClick={importFile}
+            className="cursor-pointer bg-sky-300 hover:bg-sky-400 px-6 py-2 rounded-l-sm text-desertnight font-bold"
+          >
+            IMPORT
+          </button>
 
-        {open && (
-          <div className="absolute right-0 top-full mt-1 w-full bg-gray-800 shadow-lg z-10 border-0">
-            <button
-              onClick={() => {
-                setMode((mode + 1) % 2);
-                setOpen(false);
-              }}
-              className="cursor-pointer block w-full px-4 py-2 text-left hover:bg-gray-950"
-            >
-              {textContent.extension[(mode + 1) % 2]}
-            </button>
-          </div>
-        )}
+          <button
+            onClick={() => setOpen((v) => !v)}
+            className="cursor-pointer bg-sky-300 hover:bg-sky-400 px-3 py-2 border-l border-sky-400 rounded-r-sm text-desertnight font-bold"
+          >
+            {textContent.extension[mode]} ▾
+          </button>
+
+          {open && (
+            <div className="absolute right-0 top-full mt-1 w-full bg-gray-800 shadow-lg z-10 border-0">
+              <button
+                onClick={() => {
+                  setErrorMsg("yohoooo");
+                  setMode((mode + 1) % 2);
+                  setOpen(false);
+                }}
+                className="cursor-pointer block w-full px-4 py-2 text-left hover:bg-gray-950"
+              >
+                {textContent.extension[(mode + 1) % 2]}
+              </button>
+            </div>
+          )}
+        </div>
       </div>
       <div className="text-mutedsand">{textContent.extra[mode]}</div>
     </div>
