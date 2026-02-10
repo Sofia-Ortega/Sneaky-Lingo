@@ -5,7 +5,7 @@ interface Props {
   word: IWord;
   extensionDisabled: boolean;
   deleteRow: (originalWord: string) => void;
-  disableRow: (originalWord: string, disabled: boolean) => void;
+  disableRow?: (originalWord: string, disabled: boolean) => void;
 }
 
 export default function TableRow({
@@ -15,36 +15,42 @@ export default function TableRow({
   disableRow,
 }: Props) {
   const handleCheckboxClick = () => {
+    if (!disableRow) return;
     disableRow(word.originalWord, !word.disabled);
   };
 
   return (
-    <tr>
-      <td>
-        <input
-          className={extensionDisabled ? "" : "cursor-pointer"}
-          type="checkbox"
-          disabled={extensionDisabled}
-          checked={!word.disabled}
-          onClick={handleCheckboxClick}
-          readOnly
-        />
-      </td>
+    <tr
+      className={disableRow ? "" : " border-b last:border-b-0 border-gray-900"}
+    >
+      {disableRow && (
+        <td>
+          <input
+            className={extensionDisabled ? "" : "cursor-pointer"}
+            type="checkbox"
+            disabled={extensionDisabled}
+            checked={!word.disabled}
+            onClick={handleCheckboxClick}
+            readOnly
+          />
+        </td>
+      )}
       <td
-        className={
-          word.disabled || extensionDisabled ? "line-through text-gray-400" : ""
-        }
+        className={`
+          py-3
+          px-2
+          ${word.disabled || extensionDisabled ? "line-through text-gray-400" : ""}`}
       >
         {word.originalWord}
       </td>
       <td
-        className={
-          word.disabled || extensionDisabled ? "line-through text-gray-400" : ""
-        }
+        className={`
+          px-2
+          ${word.disabled || extensionDisabled ? "line-through text-gray-400" : ""}`}
       >
         {word.replaceWord}
       </td>
-      <td className="flex justify-center items-center">
+      <td>
         <button
           onClick={() => deleteRow(word.originalWord)}
           className="cursor-pointer"

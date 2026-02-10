@@ -10,7 +10,7 @@ import {
 } from "../functions/localStorage";
 import ErrorSnackbar from "./shared/ErrorSnackbar";
 
-export default function Table() {
+export default function TableContainer() {
   const [words, setWords] = useState<IWord[]>([]);
 
   const [originalWord, setOriginalWord] = useState("");

@@ -1,5 +1,5 @@
 import Header from "../components/shared/Header";
-import Table from "../components/Table";
+import TableContainer from "../components/TableContainer";
 
 interface Props {
   setPage: React.Dispatch<React.SetStateAction<number>>;
@@ -14,7 +14,7 @@ export default function HomePage({ setPage }: Props) {
         Learn your vocab faster by replacing words as you browse the internet!
       </div>
 
-      <Table />
+      <TableContainer />
 
       <div className="flex flex-col gap-3">
         <button
