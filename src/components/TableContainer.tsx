@@ -99,7 +99,7 @@ export default function TableContainer() {
   };
 
   return (
-    <div className="my-6">
+    <div className="my-6 max-h-80 overflow-y-auto">
       {errorMsg && <ErrorSnackbar errorMsg={errorMsg} />}
 
       <table

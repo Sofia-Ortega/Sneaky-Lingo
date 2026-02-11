@@ -157,19 +157,21 @@ export default function ImportPage({ setPage }: Props) {
 
       {words ? (
         <>
-          <table className="border-collapse border-spacing-x-4 min-w-sm">
-            <thead></thead>
-            <tbody>
-              {words.map((w) => (
-                <TableRow
-                  word={w}
-                  key={w.originalWord}
-                  extensionDisabled={false}
-                  deleteRow={deleteRow}
-                />
-              ))}
-            </tbody>
-          </table>
+          <div className="overflow-y-auto max-h-80">
+            <table className="border-collapse border-spacing-x-4 min-w-sm">
+              <thead></thead>
+              <tbody>
+                {words.map((w) => (
+                  <TableRow
+                    word={w}
+                    key={w.originalWord}
+                    extensionDisabled={false}
+                    deleteRow={deleteRow}
+                  />
+                ))}
+              </tbody>
+            </table>
+          </div>
           <div>
             <button
               className="cursor-pointer bg-sky-300 hover:bg-sky-400 text-desertnight font-extrabold px-10 py-2 rounded-sm"
