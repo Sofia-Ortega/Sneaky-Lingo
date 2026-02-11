@@ -82,7 +82,7 @@ export const disableWordInLocalStorage = (
     !chrome.storage?.local
   ) {
     console.log("Chrome Extension functionality disabled globally");
-    return new Promise((resolve) => resolve([]));
+    return;
   }
 
   chrome.storage.local.get(TRANSLATION_KEY, (result) => {
@@ -100,7 +100,7 @@ export const disableWordInLocalStorage = (
   });
 };
 
-export const disableExtension = () => {
+export const disableExtension = (newDisabledState: boolean) => {
   if (
     !ENABLE_EXTENTION_FUNCTIONALITY ||
     typeof chrome === "undefined" ||
@@ -110,14 +110,32 @@ export const disableExtension = () => {
     return new Promise((resolve) => resolve([]));
   }
 
-  chrome.storage.local.get(EXTENSION_DISABLED_KEY, function (result) {
-    let disabledHistory: boolean = false;
-    if (result && result[EXTENSION_DISABLED_KEY]) {
-      disabledHistory = result[EXTENSION_DISABLED_KEY] as boolean;
-    }
-    chrome.storage.local.set(
-      { [EXTENSION_DISABLED_KEY]: !disabledHistory },
-      () => {},
-    );
+  chrome.storage.local.set(
+    { [EXTENSION_DISABLED_KEY]: newDisabledState },
+    () => {},
+  );
+};
+
+export const isExtensionDisabledGlobally = async () => {
+  if (
+    !ENABLE_EXTENTION_FUNCTIONALITY ||
+    typeof chrome === "undefined" ||
+    !chrome.storage?.local
+  ) {
+    console.log("Chrome Extension functionality disabled globally");
+    return new Promise<boolean>((resolve) => resolve(false));
+  }
+
+  return await new Promise<boolean>((resolve) => {
+    chrome.storage.local.get(EXTENSION_DISABLED_KEY, function (result) {
+      let disabledHistory: boolean = false;
+
+      if (result && result[EXTENSION_DISABLED_KEY]) {
+        disabledHistory = result[EXTENSION_DISABLED_KEY] as boolean;
+        resolve(disabledHistory == true);
+      } else {
+        resolve(false);
+      }
+    });
   });
 };

@@ -5,6 +5,7 @@ import {
   addToLocalStorage,
   disableExtension,
   disableWordInLocalStorage,
+  isExtensionDisabledGlobally,
   loadLocalStorage,
   removeFromLocalStorage,
 } from "../functions/localStorage";
@@ -25,6 +26,11 @@ export default function TableContainer() {
     (async () => {
       const wordsFromLocalStorage = await loadLocalStorage();
       setWords(wordsFromLocalStorage);
+    })();
+
+    (async () => {
+      const disabledState = await isExtensionDisabledGlobally();
+      setExtensionDisabled(disabledState);
     })();
   }, []);
 
@@ -76,7 +82,7 @@ export default function TableContainer() {
   const toggleDisableAll = () => {
     const newDisabledState = !extensionDisabled;
     setExtensionDisabled(newDisabledState);
-    disableExtension();
+    disableExtension(newDisabledState);
   };
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {

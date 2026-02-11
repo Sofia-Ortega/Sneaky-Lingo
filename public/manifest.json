@@ -1,6 +1,6 @@
 {
   "name": "Sneaky Lingo",
-  "description": "Base Level Extension",
+  "description": "Subtly replace words on web pages with their foreign-language equivalents to help you learn vocab as you browse",
   "version": "1.0",
   "manifest_version": 3,
   "action": {
